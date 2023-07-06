@@ -264,6 +264,7 @@ function App() {
   const [input, setInput] = useState("");
   const [outTitle, setOutTitle] = useState("");
   const [playing, setPlaying] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     generateImage(input)
@@ -313,6 +314,20 @@ function App() {
         </div>
         }
 
+        <button className="p-4 bg-blue-700 rounded-md border border-black text-white " onClick={(() => setShowInfo(!showInfo))}>
+          {showInfo ? "Hide" : "Show"} info & credits?
+        </button>
+        {showInfo && <div className='flex flex-col gap-2 bg-white rounded-md border-black border-2 p-4'>
+          <a className="text-blue-400 underline" href='https://github.com/mwaterman29'>Made by Matt W.</a>
+          <a className="text-blue-400 underline" href='https://github.com/mwaterman29/amogus-generator'>View source code</a>
+          <p>Inspired by:</p>
+          <li><a className="text-blue-400 underline" href='https://www.youtube.com/watch?v=obmlZH3X9gs'>amogus</a></li>
+          <li><a className="text-blue-400 underline" href='https://sustext.jerma.io/'>when the imposter...</a></li>
+          <a  href='https://github.com/nagadomi/nunif#waifu2x'>Images upscaled <span className="text-blue-400 underline">by waifu2x</span></a>
+          <a  className="text-blue-400 underline" href='https://www.youtube.com/watch?v=grd-K33tOSM'>Music Credit</a>
+          <a  className="text-blue-400 underline" href='https://www.youtube.com/watch?v=grd-K33tOSM'>Original Music Credit</a>
+
+        </div>}
       </div>
       <div className='flex flex-col w-full basis-4/5 items-center justify-center'>
         <p className='text-black text-4xl p-2'>{outTitle}</p>
