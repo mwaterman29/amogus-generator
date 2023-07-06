@@ -263,10 +263,34 @@ function App() {
 
   const [input, setInput] = useState("");
   const [outTitle, setOutTitle] = useState("");
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     generateImage(input)
   }, [input])
+
+  useEffect(() => {
+      document.getElementById("backgroundMusic").play().
+      catch(
+          (error) => {
+            document.addEventListener('click', () => 
+            {
+              document.getElementById("backgroundMusic").play()
+              setPlaying(true);
+            })
+      })
+
+      document.getElementById("backgroundMusic").play().
+      catch(
+          (error) => {
+            document.addEventListener('keydown', () => 
+            {
+              document.getElementById("backgroundMusic").play()
+              setPlaying(true);
+            })
+      })
+
+  });
 
   return (
     <div className="flex flex-row bg-blue-400 h-screen w-screen">
@@ -274,6 +298,20 @@ function App() {
         <p className='text-black underline text-6xl'>AMOGUS GENERATOR</p>
         <p>Enter text here... it will generate amogus....</p>
         <input type='text' onChange={(evt) => {setInput(evt.target.value)}}/>
+        <audio id="backgroundMusic">
+        <source src={bgMusic} type="audio/mpeg" loop volume={0.5}/>
+        Your browser does not support the audio element.
+        </audio>
+        {
+        playing &&
+        <div>
+          <p>Volume</p>
+          <input type="range" id="volume-slider" onChange={(e) => {
+            var audio = document.getElementById("backgroundMusic");
+            audio.volume = e.currentTarget.value / 100;
+          }}></input>
+        </div>
+        }
 
       </div>
       <div className='flex flex-col w-full basis-4/5 items-center justify-center'>
@@ -281,6 +319,7 @@ function App() {
         <canvas id='canvas'/>
       </div>
     </div>
+
   );
 }
 
