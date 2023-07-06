@@ -104,8 +104,8 @@ function App() {
     }
 
     //rescaling is wacky but this works :DD
-    if (canvas.height > (window.screen.height - 300)) {
-      const scaleFactor = (window.screen.height - 300) / canvas.height;
+    if (canvas.height > (window.visualViewport.height - 100)) {
+      const scaleFactor = (window.visualViewport.height - 100) / canvas.height;
   
       // temp for rescale
       const tempCanvas = document.createElement('canvas');
@@ -181,10 +181,17 @@ function App() {
   }, [input])
 
   return (
-    <div className="App">
-      <input type='text' onChange={(evt) => {setInput(evt.target.value)}}/>
-      <canvas id='canvas'/>
-      <button>Button</button>
+    <div className="flex flex-row bg-blue-400 h-screen w-screen">
+      <div className='w-full basis-1/5 flex flex-col p-6 gap-4'>
+        <p className='text-black underline text-6xl'>AMOGUS GENERATOR</p>
+        <p>Enter text here... it will generate amogus....</p>
+        <input type='text' onChange={(evt) => {setInput(evt.target.value)}}/>
+
+      </div>
+      <div className='flex flex-col w-full basis-4/5 items-center justify-center'>
+        <p className='text-black text-4xl p-2'>{input}</p>
+        <canvas id='canvas'/>
+      </div>
     </div>
   );
 }
