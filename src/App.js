@@ -4,6 +4,21 @@ import base from './amogus_base.png'
 import bone from './amogus_bone.png'
 import { useEffect, useState } from 'react';
 
+import bgMusic from './bg music.mp3'
+
+//special
+import abigus from './special/abigus.png'
+import abominatiogus from './special/abominatiogus.png'
+import asmolgus from './special/asmolgus.png'
+import beef from './special/beef.png'
+import mogu_mogu from './special/mogumogu.png'
+import mug from './special/mug.png'
+import oh_no from './special/oh no.png'
+import oh_yeah from './special/oh yeah.png'
+import sugoma from './special/sugoma.png'
+import usa from './special/usa.png'
+import what_if from './special/what if.png'
+
 function App() {
 
   //init base image w/ static import
@@ -15,7 +30,17 @@ function App() {
   const boneImage = new Image();
   boneImage.src = bone;
   const special = {
-    beef: {}
+    abigus: {img: abigus, w: 268, h:255},
+    abominatiogus: {img: abominatiogus, w: 200, h:226},
+    asmolgus: {img: asmolgus, w: 115, h:118},
+    beef: {img: beef, w: 159, h:121},
+    "mogu mogu": {img: mogu_mogu, w: 239, h:242},
+    mug: {img: mug, w: 215, h:229},
+    "oh no": {img: oh_no, w: 204, h:233},
+    "oh yeah": {img: oh_yeah, w: 226, h:195},
+    sugoma: {img: sugoma, w: 168, h:174},
+    usa: {img: usa, w: 170, h:269},
+    "what if": {img: what_if, w: 209, h:192},
   }
 
   // zlices of the existing image
@@ -29,11 +54,54 @@ function App() {
   };
   const lexi = 'AMOGUS';
 
+
   function generateImage(inputString) {
     let out = "";
 
     if(special[inputString])
-      return special[inputString];
+    {
+      console.log("Special " + inputString)
+      //populate special via static import
+      const specAsImage = new Image();
+      specAsImage.src = special[inputString].img;
+      specAsImage.width = special[inputString].w;
+      specAsImage.height = special[inputString].h;
+
+      const canvas = document.getElementById('canvas');
+      canvas.height = specAsImage.height;
+      canvas.width = specAsImage.width;
+
+      const ctx = canvas.getContext('2d');
+      specAsImage.onload = function () {
+        setOutTitle(input);
+        ctx.drawImage(
+          specAsImage,
+          0, 0,
+          specAsImage.width, specAsImage.height,
+          0, 0,
+          canvas.width, canvas.height
+        );
+        console.log(`Drawn special ${canvas.width} X ${canvas.height}`);
+      };
+
+      //rescale lol
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvas.width * 3;
+      tempCanvas.height = canvas.height * 3;
+  
+      // rescale temp canvas
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
+      canvas.width = tempCanvas.width;
+      canvas.height = tempCanvas.height;
+  
+      // clear n draw on original context
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+
+      return canvas;
+    }
+
 
     //First, get total height of the string
     let canvasHeight = 0;
