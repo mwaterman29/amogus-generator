@@ -14,6 +14,9 @@ function App() {
   //bone, w static import
   const boneImage = new Image();
   boneImage.src = bone;
+  const special = {
+    beef: {}
+  }
 
   // zlices of the existing image
   const imageSlices = {
@@ -24,13 +27,23 @@ function App() {
     U: { x: 0, y: 520, h: 150 },
     S: { x: 0, y: 670, h: 180 }
   };
+  const lexi = 'AMOGUS';
 
   function generateImage(inputString) {
+    let out = "";
+
+    if(special[inputString])
+      return special[inputString];
 
     //First, get total height of the string
     let canvasHeight = 0;
     for (let i = 0; i < inputString.length; i++) {
+
       const letter = inputString[i].toUpperCase();
+
+      if(!lexi.includes(letter))
+        continue;
+
       const slice = imageSlices[letter];
       canvasHeight += slice.h;
 
@@ -55,9 +68,10 @@ function App() {
     // loop through each character of the input string
     let rectY = 0;
     for (let i = 0; i < inputString.length; i++) {
-
-
       const letter = inputString[i].toUpperCase();
+
+      if(!lexi.includes(letter))
+        continue;
 
       //If the first letter isn't an A, stick a bone on top.
       if(i == 0 && letter != 'A')
@@ -100,6 +114,8 @@ function App() {
         );
         rectY += 200 // inc height
       }
+
+      out += (i == 0) ? letter : letter.toLowerCase();
 
     }
 
@@ -170,11 +186,15 @@ function App() {
   }
 
     console.log(`Finalizing image, input: ${input}, mirrored over? horiz: ${repeatsItself}, vert ${isPalindromic}`)
+
+    setOutTitle(out);
+
     // return generated amogus
     return canvas;
   }
 
   const [input, setInput] = useState("");
+  const [outTitle, setOutTitle] = useState("");
 
   useEffect(() => {
     generateImage(input)
@@ -189,7 +209,7 @@ function App() {
 
       </div>
       <div className='flex flex-col w-full basis-4/5 items-center justify-center'>
-        <p className='text-black text-4xl p-2'>{input}</p>
+        <p className='text-black text-4xl p-2'>{outTitle}</p>
         <canvas id='canvas'/>
       </div>
     </div>
