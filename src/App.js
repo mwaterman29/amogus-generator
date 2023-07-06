@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import base from './amogus_base.png'
+import bone from './amogus_bone.png'
 import { useEffect, useState } from 'react';
 
 function App() {
@@ -9,6 +10,10 @@ function App() {
   const baseImage = new Image();
   baseImage.src = base;
   const baseImageWidth = 865
+
+  //bone, w static import
+  const boneImage = new Image();
+  boneImage.src = bone;
 
   // zlices of the existing image
   const imageSlices = {
@@ -28,6 +33,12 @@ function App() {
       const letter = inputString[i].toUpperCase();
       const slice = imageSlices[letter];
       canvasHeight += slice.h;
+
+      //Check for bones
+      if(i == 0 && letter != 'A')
+        canvasHeight += 200;
+      if(i == inputString.length - 1 && letter != 'S')
+        canvasHeight += 200;
     }
 
     // get canvas el, set height
@@ -44,7 +55,24 @@ function App() {
     // loop through each character of the input string
     let rectY = 0;
     for (let i = 0; i < inputString.length; i++) {
+
+
       const letter = inputString[i].toUpperCase();
+
+      //If the first letter isn't an A, stick a bone on top.
+      if(i == 0 && letter != 'A')
+      {
+        //console.log("top bone!")
+        ctx.drawImage(
+          boneImage,      // bone src
+          0, 0,  // Slice coordinates
+          baseImageWidth, 200,  // Slice dimensions on the canvas
+          0, rectY,      // Destination coordinates on the canvas
+          baseImageWidth, 200 // Destination dimensions on the canvas
+        );
+        rectY += 200 // inc height
+      }
+
       const slice = imageSlices[letter];
 
       // calculate the position of the rectangle based on the index
@@ -58,6 +86,21 @@ function App() {
         baseImageWidth, slice.h  // Destination dimensions on the canvas
       );
       rectY += slice.h // inc height
+
+      //If the last letter isn't an S, stick a bone on the bottom.
+      if(i == inputString.length - 1 && letter != 'S')
+      {
+        console.log("bottom bone")
+        ctx.drawImage(
+          boneImage,      // bone src
+          0, 200,  // Slice coordinates
+          baseImageWidth, 200,  // Slice dimensions on the canvas
+          0, rectY,      // Destination coordinates on the canvas
+          baseImageWidth, 200 // Destination dimensions on the canvas
+        );
+        rectY += 200 // inc height
+      }
+
     }
 
     //rescaling is wacky but this works :DD
@@ -81,7 +124,7 @@ function App() {
     }
 
     // "If letters are mirrored, mirror over the Y axis." - actually means vertical (over X), lol
-    const isPalindromic = inputString === inputString.split('').reverse().join('');
+    const isPalindromic = inputString.length > 1 && inputString === inputString.split('').reverse().join('');
     if (canvas.height > 0 && isPalindromic) {
       const imageData = ctx.getImageData(0, 0, canvas.width, Math.floor(canvas.height / 2));
       const mirroredData = new ImageData(imageData.width, imageData.height);
