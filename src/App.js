@@ -60,6 +60,73 @@ function App() {
       rectY += slice.h // inc height
     }
 
+    //rescaling is wacky but this works :DD
+    if (canvas.height > (window.screen.height - 300)) {
+      const scaleFactor = (window.screen.height - 300) / canvas.height;
+  
+      // temp for rescale
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvas.width * scaleFactor;
+      tempCanvas.height = canvas.height * scaleFactor;
+  
+      // rescale temp canvas
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
+      canvas.width = tempCanvas.width;
+      canvas.height = tempCanvas.height;
+  
+      // clear n draw on original context
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+    }
+
+    // "If letters are mirrored, mirror over the Y axis." - actually means vertical (over X), lol
+    const isPalindromic = inputString === inputString.split('').reverse().join('');
+    if (canvas.height > 0 && isPalindromic) {
+      const imageData = ctx.getImageData(0, 0, canvas.width, Math.floor(canvas.height / 2));
+      const mirroredData = new ImageData(imageData.width, imageData.height);
+
+      for (let y = 0; y < imageData.height; y++) {
+        for (let x = 0; x < imageData.width; x++) {
+          const sourceIndex = (y * imageData.width + x) * 4;
+          const destIndex = ((imageData.height - y - 1) * imageData.width + x) * 4;
+
+          mirroredData.data[destIndex] = imageData.data[sourceIndex]; // r
+          mirroredData.data[destIndex + 1] = imageData.data[sourceIndex + 1]; // g
+          mirroredData.data[destIndex + 2] = imageData.data[sourceIndex + 2]; // b
+          mirroredData.data[destIndex + 3] = imageData.data[sourceIndex + 3]; // a
+        }
+      }
+      // draw mirror on second half
+      ctx.putImageData(mirroredData, 0, Math.ceil(canvas.height / 2));
+    }
+
+
+  //"If letters are repeated, mirror over the X axis." - actually means horizontal (over Y), lol
+  const repeatsItself = (
+    inputString.length % 2 == 0 &&
+    inputString === inputString.slice(0, inputString.length / 2) + inputString.slice(0, inputString.length / 2)
+  )
+  if (canvas.height > 0 && repeatsItself) {
+    const imageData = ctx.getImageData(0, 0, Math.floor(canvas.width / 2), canvas.height);
+    const mirroredData = new ImageData(imageData.width, imageData.height);
+
+    for (let y = 0; y < imageData.height; y++) {
+      for (let x = 0; x < imageData.width; x++) {
+        const sourceIndex = (y * imageData.width + x) * 4;
+        const destIndex = (y * imageData.width + (imageData.width - x - 1)) * 4;
+        mirroredData.data[destIndex] = imageData.data[sourceIndex]; // r
+        mirroredData.data[destIndex + 1] = imageData.data[sourceIndex + 1]; // g
+        mirroredData.data[destIndex + 2] = imageData.data[sourceIndex + 2]; // b
+        mirroredData.data[destIndex + 3] = imageData.data[sourceIndex + 3]; // a
+      }
+    }
+    
+    // draw mirror on second half
+    ctx.putImageData(mirroredData, imageData.width, 0);
+  }
+
+    console.log(`Finalizing image, input: ${input}, mirrored over? horiz: ${repeatsItself}, vert ${isPalindromic}`)
     // return generated amogus
     return canvas;
   }
@@ -67,7 +134,6 @@ function App() {
   const [input, setInput] = useState("");
 
   useEffect(() => {
-    console.log(`input: ${input}`)
     generateImage(input)
   }, [input])
 
