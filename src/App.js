@@ -24,7 +24,7 @@ function App() {
   //init base image w/ static import
   const baseImage = new Image();
   baseImage.src = base;
-  const baseImageWidth = 865
+  const baseImageWidth = 800
 
   //bone, w static import
   const boneImage = new Image();
@@ -102,6 +102,13 @@ function App() {
       return canvas;
     }
 
+    
+    const isPalindromic = inputString.length > 1 && inputString === inputString.split('').reverse().join('');
+    //"If letters are repeated, mirror over the X axis." - actually means horizontal (over Y), lol
+    const repeatsItself = (
+      inputString.length % 2 == 0 &&
+      inputString === inputString.slice(0, inputString.length / 2) + inputString.slice(0, inputString.length / 2)
+    )
 
     //First, get total height of the string
     let canvasHeight = 0;
@@ -115,10 +122,14 @@ function App() {
       const slice = imageSlices[letter];
       canvasHeight += slice.h;
 
-      //Check for bones
+      
       if(i == 0 && letter != 'A')
         canvasHeight += 200;
-      if(i == inputString.length - 1 && letter != 'S')
+      //extra bottom bone when mirrored
+      if(isPalindromic && i == 0 && letter != 'A')
+        canvasHeight += 200;
+      //no bottom bone when it's mirrored!
+      if(!isPalindromic && i == inputString.length - 1 && letter != 'S')
         canvasHeight += 200;
     }
 
@@ -208,7 +219,6 @@ function App() {
     }
 
     // "If letters are mirrored, mirror over the Y axis." - actually means vertical (over X), lol
-    const isPalindromic = inputString.length > 1 && inputString === inputString.split('').reverse().join('');
     if (canvas.height > 0 && isPalindromic) {
       const imageData = ctx.getImageData(0, 0, canvas.width, Math.floor(canvas.height / 2));
       const mirroredData = new ImageData(imageData.width, imageData.height);
@@ -229,11 +239,7 @@ function App() {
     }
 
 
-  //"If letters are repeated, mirror over the X axis." - actually means horizontal (over Y), lol
-  const repeatsItself = (
-    inputString.length % 2 == 0 &&
-    inputString === inputString.slice(0, inputString.length / 2) + inputString.slice(0, inputString.length / 2)
-  )
+
   if (canvas.height > 0 && repeatsItself) {
     const imageData = ctx.getImageData(0, 0, Math.floor(canvas.width / 2), canvas.height);
     const mirroredData = new ImageData(imageData.width, imageData.height);
@@ -291,7 +297,7 @@ function App() {
             })
       })
 
-  });
+  }, [input]);
 
   return (
     <div className="flex flex-row bg-blue-400 h-screen w-screen">
