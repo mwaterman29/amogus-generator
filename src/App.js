@@ -301,8 +301,17 @@ function App() {
 
   return (
     <div className="flex flex-row bg-blue-400 h-screen w-screen">
-      <div className='w-full basis-1/5 flex flex-col p-6 gap-4'>
-        <p className='text-black underline text-6xl'>AMOGUS GENERATOR</p>
+      <div className='w-full basis-1/4 flex flex-col p-6 gap-4'>
+        <p className='text-black underline text-6xl'>Asmolg.us</p>
+        <div className='flex flex-row'>
+          <img
+              src={asmolgus}
+              height={50}
+              width={50}
+            />
+          <p className='text-black underline text-xl'>amogus generator</p>
+
+        </div>
         <p>Enter text here... it will generate amogus....</p>
         <input type='text' onChange={(evt) => {setInput(evt.target.value)}}/>
         <audio id="backgroundMusic">
@@ -335,7 +344,7 @@ function App() {
 
         </div>}
       </div>
-      <div className='flex flex-col w-full basis-4/5 items-center justify-center'>
+      <div className='flex flex-col w-full basis-3/4 items-center justify-center'>
         <p className='text-black text-4xl p-2'>{outTitle}</p>
         <canvas id='canvas'/>
       </div>
